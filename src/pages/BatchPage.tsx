@@ -27,24 +27,41 @@ export default function BatchPage() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const urlOrFileToBase64 = async (source: File | string): Promise<string> => {
-    if (typeof source === 'string') {
-      if (source.startsWith('data:')) return source;
-      const response = await fetch(source);
-      const blob = await response.blob();
-      return new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-    } else {
-      return new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(source);
-      });
-    }
+    let url = typeof source === 'string' ? source : URL.createObjectURL(source);
+    
+    return new Promise<string>((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous'; // 避免跨域图片的 canvas 污染问题
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return reject('Canvas not supported');
+        
+        // 限制最大宽高，避免图片过大导致 Netlify 413 Payload Too Large
+        let { width, height } = img;
+        const MAX_SIZE = 1024;
+        if (width > MAX_SIZE || height > MAX_SIZE) {
+          if (width > height) {
+            height = Math.round(height * (MAX_SIZE / width));
+            width = MAX_SIZE;
+          } else {
+            width = Math.round(width * (MAX_SIZE / height));
+            height = MAX_SIZE;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        // 压缩质量 0.8
+        const base64 = canvas.toDataURL('image/jpeg', 0.8);
+        if (typeof source !== 'string') URL.revokeObjectURL(url);
+        resolve(base64);
+      };
+      img.onerror = reject;
+      img.src = url;
+    });
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
