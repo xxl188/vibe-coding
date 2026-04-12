@@ -749,7 +749,7 @@ export default function InputPage() {
                       key={task.id}
                       onClick={() => {
                         setImage(null);
-                        setImagePreview(task.imageUrl);
+                        setImagePreview(task.imageUrl || null);
                         setShowAssetLibrary(false);
                       }}
                       className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:border-blue-500 hover:shadow-md transition-all group"

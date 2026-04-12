@@ -18,10 +18,10 @@ export default defineConfig({
             proxyReq.removeHeader('origin');
             proxyReq.removeHeader('referer');
           });
-          proxy.on('proxyRes', (proxyRes, req, res) => {
+          proxy.on('proxyRes', (proxyRes, _req, _res) => {
             console.log('Received response from Volcengine:', proxyRes.statusCode);
           });
-          proxy.on('error', (err, req, res) => {
+          proxy.on('error', (err, _req, _res) => {
             console.error('Proxy error:', err);
           });
         }
