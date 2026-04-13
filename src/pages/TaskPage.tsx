@@ -49,15 +49,13 @@ export default function TaskPage() {
   const handleModeChange = (modeId: string) => {
     setActiveMode(modeId);
     setResultImage(null); // 切换模式时清空生成的图片结果
-    // 可选：如果您希望切换模式时把之前填的提示词或选的图片也清空，可以取消注释下面的代码
-    // setPrompt('');
-    // setActiveStyle('');
-    // setImage(null);
-    // setImagePreview(null);
-    // setReferenceImage(null);
-    // setReferenceImagePreview(null);
-    // setExtraImage(null);
-    // setExtraImagePreview(null);
+    
+    // 切换模式时自动清空之前填写的提示词和选择的风格
+    setPrompt('');
+    setActiveStyle('');
+    
+    // 根据需求，这里我们只清空提示词和风格，保留用户上传的图片
+    // 这样如果用户传了图片想试试不同模式，就不需要重新上传了
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'main' | 'ref' | 'extra') => {
