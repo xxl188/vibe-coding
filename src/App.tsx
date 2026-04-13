@@ -19,10 +19,7 @@ function Navigation() {
   // Apply theme color globally when it changes
   useEffect(() => {
     const color = state.settings.themeColor;
-    document.documentElement.style.setProperty('--color-vibe-bg', color === '#ffffff' ? '#f6f6f7' : color);
-    
-    // Apply background color to body directly to ensure full coverage
-    document.body.style.backgroundColor = color;
+    document.documentElement.style.setProperty('--color-vibe-bg', color === '#ffffff' ? '#fcfcfc' : color);
   }, [state.settings.themeColor]);
 
   const navItems = [
@@ -124,7 +121,7 @@ function TopHeader() {
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen w-full font-sans selection:bg-indigo-100 selection:text-indigo-900 bg-[#fcfcfc] overflow-hidden">
+    <div className="flex h-screen w-full font-sans selection:bg-indigo-100 selection:text-indigo-900 overflow-hidden" style={{ backgroundColor: 'var(--color-vibe-bg, #fcfcfc)' }}>
       <Navigation />
       
       <div className="flex-1 flex flex-col h-screen overflow-hidden relative">

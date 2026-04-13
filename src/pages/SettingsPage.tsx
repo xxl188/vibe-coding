@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Save, Settings2, Image, Key } from 'lucide-react';
 import clsx from 'clsx';
 import { useAppContext } from '../AppContext';
@@ -10,20 +10,31 @@ export default function SettingsPage() {
   // Local state for the form, initialized from context
   const [localSettings, setLocalSettings] = useState(state.settings);
 
+  // Apply preview color globally when localSettings.themeColor changes
+  useEffect(() => {
+    const color = localSettings.themeColor;
+    document.documentElement.style.setProperty('--color-vibe-bg', color === '#ffffff' ? '#fcfcfc' : color);
+    
+    // Cleanup function: when unmounting or leaving the page without saving,
+    // revert the background color back to the saved global state.
+    return () => {
+      const savedColor = state.settings.themeColor;
+      document.documentElement.style.setProperty('--color-vibe-bg', savedColor === '#ffffff' ? '#fcfcfc' : savedColor);
+    };
+  }, [localSettings.themeColor, state.settings.themeColor]);
+
   const handleSave = () => {
     setIsSaving(true);
     // Simulate API delay
     setTimeout(() => {
       updateSettings(localSettings);
       setIsSaving(false);
-      alert('设置已保存成功！');
+      alert('设置已保存成功并应用到全局！');
     }, 600);
   };
 
   const handleColorChange = (color: string) => {
     setLocalSettings({ ...localSettings, themeColor: color });
-    // Apply globally immediately for preview
-    document.documentElement.style.setProperty('--color-vibe-bg', color === '#ffffff' ? '#f6f6f7' : color);
   };
 
   return (
