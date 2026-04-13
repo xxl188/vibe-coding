@@ -175,6 +175,7 @@ export default function InputPage() {
     }
   };
 
+  // Handle Input Changes correctly for all fields
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -477,13 +478,13 @@ export default function InputPage() {
     }
   };
 
-  const InputField = ({ label, name, placeholder }: { label: string, name: string, placeholder?: string }) => (
+  const InputField = ({ label, name, placeholder }: { label: string, name: keyof typeof formData, placeholder?: string }) => (
     <div className="flex flex-col gap-1.5">
       <label className="text-xs font-bold text-gray-500">{label}</label>
       <input 
         type="text"
         name={name}
-        value={(formData as any)[name]}
+        value={formData[name] || ''}
         onChange={handleInputChange}
         placeholder={placeholder}
         className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-300"
