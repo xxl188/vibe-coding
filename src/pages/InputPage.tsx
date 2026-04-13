@@ -478,7 +478,8 @@ export default function InputPage() {
     }
   };
 
-  const InputField = ({ label, name, placeholder }: { label: string, name: keyof typeof formData, placeholder?: string }) => (
+  // InputField 被提取为普通函数而不是 React 组件，以避免每次渲染时重新挂载导致失去焦点
+  const renderInputField = (label: string, name: keyof typeof formData, placeholder?: string) => (
     <div className="flex flex-col gap-1.5">
       <label className="text-xs font-bold text-gray-500">{label}</label>
       <input 
@@ -590,13 +591,13 @@ export default function InputPage() {
               {/* Basic Info */}
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-gray-800 border-b border-gray-100 pb-2">基础信息</h3>
-                <InputField label="商品名称" name="title" placeholder="例如：透气运动跑鞋" />
+                {renderInputField("商品名称", "title", "例如：透气运动跑鞋")}
                 <div className="grid grid-cols-2 gap-4">
-                  <InputField label="品牌" name="brand" placeholder="品牌名" />
-                  <InputField label="类目" name="category" placeholder="例如：运动鞋" />
+                  {renderInputField("品牌", "brand", "品牌名")}
+                  {renderInputField("类目", "category", "例如：运动鞋")}
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <InputField label="价格" name="price" placeholder="例如：¥ 299" />
+                  {renderInputField("价格", "price", "例如：¥ 299")}
                 </div>
               </div>
 
@@ -604,10 +605,10 @@ export default function InputPage() {
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-gray-800 border-b border-gray-100 pb-2">属性规格</h3>
                 <div className="grid grid-cols-2 gap-4">
-                  <InputField label="材质" name="material" placeholder="例如：网面/棉质" />
-                  <InputField label="颜色" name="color" placeholder="例如：黑/白" />
-                  <InputField label="尺寸" name="size" placeholder="例如：36-44" />
-                  <InputField label="适用人群" name="targetUser" placeholder="例如：青年男性" />
+                  {renderInputField("材质", "material", "例如：网面/棉质")}
+                  {renderInputField("颜色", "color", "例如：黑/白")}
+                  {renderInputField("尺寸", "size", "例如：36-44")}
+                  {renderInputField("适用人群", "targetUser", "例如：青年男性")}
                 </div>
               </div>
 
