@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, Layers, Image as ImageIcon, Wand2, Grid, Settings as SettingsIcon, Share2, Sparkles, ArrowLeft, Plus } from 'lucide-react';
 import clsx from 'clsx';
 import { AppProvider, useAppContext } from './AppContext';
@@ -10,7 +10,7 @@ import TaskPage from './pages/TaskPage';
 import InputPage from './pages/InputPage';
 import BatchPage from './pages/BatchPage';
 import SettingsPage from './pages/SettingsPage';
-import TemplatePage from './pages/TemplatePage';
+import LandingPage from './pages/LandingPage';
 
 function Navigation() {
   const location = useLocation();
@@ -26,9 +26,8 @@ function Navigation() {
   }, [state.settings.themeColor]);
 
   const navItems = [
-    { path: '/', icon: Home, label: '首页' },
+    { path: '/dashboard', icon: Home, label: '首页' },
     { path: '/layers', icon: Layers, label: '商品录入' },
-    { path: '/templates', icon: ImageIcon, label: '模板资产库' },
     { path: '/tasks', icon: Wand2, label: 'AI 创作中心' },
     { path: '/grid', icon: Grid, label: '批量导入' },
     { path: '/settings', icon: SettingsIcon, label: '全局偏好设置' },
@@ -41,7 +40,7 @@ function Navigation() {
         <div className="flex flex-col gap-6 w-full px-3">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path));
+            const isActive = location.pathname === item.path || (item.path !== '/dashboard' && location.pathname.startsWith(item.path));
             
             return (
               <div key={item.path} className="relative group">
@@ -72,7 +71,7 @@ function Navigation() {
       <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 z-50 flex items-center justify-around p-3 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path));
+          const isActive = location.pathname === item.path || (item.path !== '/dashboard' && location.pathname.startsWith(item.path));
           
           return (
             <Link
@@ -95,10 +94,14 @@ function Navigation() {
 }
 
 function TopHeader() {
+  const navigate = useNavigate();
   return (
     <header className="h-16 flex items-center justify-between px-6 bg-white border-b border-gray-100 sticky top-0 z-40">
       <div className="flex items-center gap-4">
-        <button className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full transition-colors">
+        <button 
+          onClick={() => navigate(-1)}
+          className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full transition-colors"
+        >
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex items-center gap-3">
@@ -119,28 +122,34 @@ function TopHeader() {
   );
 }
 
+function AppLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex h-screen w-full font-sans selection:bg-indigo-100 selection:text-indigo-900 bg-[#fcfcfc] overflow-hidden">
+      <Navigation />
+      
+      <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <TopHeader />
+        <main className="flex-1 overflow-y-auto relative w-full h-full custom-scrollbar" style={{ backgroundImage: 'radial-gradient(#e5e7eb 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   return (
     <AppProvider>
       <BrowserRouter>
-        <div className="flex h-screen w-full font-sans selection:bg-indigo-100 selection:text-indigo-900 bg-[#fcfcfc] overflow-hidden">
-          <Navigation />
-          
-          <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
-            <TopHeader />
-            <main className="flex-1 overflow-y-auto relative w-full h-full custom-scrollbar" style={{ backgroundImage: 'radial-gradient(#e5e7eb 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
-              <Routes>
-                <Route path="/" element={<DashboardPage />} />
-                <Route path="/layers" element={<InputPage />} />
-                <Route path="/templates" element={<TemplatePage />} />
-                <Route path="/tasks" element={<TaskPage />} />
-                <Route path="/grid" element={<BatchPage />} />
-                <Route path="/settings" element={<SettingsPage />} />
-                <Route path="*" element={<DashboardPage />} />
-              </Routes>
-            </main>
-          </div>
-        </div>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/dashboard" element={<AppLayout><DashboardPage /></AppLayout>} />
+          <Route path="/layers" element={<AppLayout><InputPage /></AppLayout>} />
+          <Route path="/tasks" element={<AppLayout><TaskPage /></AppLayout>} />
+          <Route path="/grid" element={<AppLayout><BatchPage /></AppLayout>} />
+          <Route path="/settings" element={<AppLayout><SettingsPage /></AppLayout>} />
+          <Route path="*" element={<LandingPage />} />
+        </Routes>
       </BrowserRouter>
     </AppProvider>
   );
