@@ -71,7 +71,18 @@ const defaultState: AppState = {
     totalGenerated: 0,
     totalExported: 0,
   },
-  history: [],
+  history: [
+    {
+      id: 'TSK-1750',
+      name: '水珠连衣裙 高速摄影',
+      status: '已完成',
+      time: Date.now(),
+      imageUrl: 'https://images.unsplash.com/photo-1515347619252-9270081eb5e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      title: '灵动水珠，定格惊艳瞬间',
+      description: '采用高速摄影技术，捕捉水珠飞溅的绝美形态，打造如梦似幻的视觉冲击力，完美展现夏日清凉与高定质感。',
+      price: '¥ 1299.00'
+    }
+  ],
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
